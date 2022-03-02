@@ -17,15 +17,21 @@ public class MailKit {
 
     //邮件服务器主机名
     // QQ邮箱的 SMTP 服务器地址为: smtp.qq.com
-    private static String myEmailSMTPHost = "smtp.163.com";
+    private  String myEmailSMTPHost = "smtp.163.com";
 
     //发件人邮箱
-    private static String myEmailAccount = "13968613199@163.com";
+    private  String myEmailAccount = "13968613199@163.com";
 
     //发件人邮箱密码（授权码）
     //在开启SMTP服务时会获取到一个授权码，把授权码填在这里
-    private static String myEmailPassword = "GIFHGHMUPRDSGRAE";
+    private  String myEmailPassword = "GIFHGHMUPRDSGRAE";
 
+    public MailKit(String smptHost,String emailAccount,String emailPassword ) {
+        myEmailSMTPHost=smptHost;
+        myEmailAccount=emailAccount;
+        myEmailPassword=emailPassword;
+
+    }
     /**
      * 邮件单发（自由编辑短信，并发送，适用于私信）
      *
@@ -34,7 +40,7 @@ public class MailKit {
      * @param emailContent   邮件内容
      * @throws Exception
      */
-    public static void sendEmail(String toEmailAddress, String emailTitle, String emailContent) throws Exception {
+    public  void sendEmail(String toEmailAddress, String emailTitle, String emailContent) throws Exception {
 
         Properties props = new Properties();
 
@@ -109,10 +115,10 @@ public class MailKit {
         transport.sendMessage(msg, new Address[]{new InternetAddress(toEmailAddress)});
 
         //将该邮件保存到本地
-        OutputStream out = new FileOutputStream("MyEmail.eml");
+   /*     OutputStream out = new FileOutputStream("MyEmail.eml");
         msg.writeTo(out);
         out.flush();
-        out.close();
+        out.close();*/
 
         transport.close();
     }
