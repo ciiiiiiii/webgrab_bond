@@ -3,18 +3,24 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.silas.utils.HttpKit;
 import com.silas.utils.MailKit;
+import com.silas.utils.Prop;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class App
 {
+
+    private Prop prop;
+
     public static void main( String[] args )  throws Exception {
-        procBond();
+       App app=new App();
+       app.prop=new Prop("common.properties");
+       app.procBond();
+
     }
 
-    public static void procBond()
+    public  void procBond()
     {
         System.out.println("get my debit list");
         // System.out.println(App.class.getResource("mybond.txt").getPath());
@@ -63,7 +69,8 @@ public class App
                         {
                             System.out.println("not send");
                             try {
-                                MailKit.sendEmail("13968613199@163.com", "title", "redeem bond name-" + bond_nm);
+                                MailKit mailKit=new MailKit(prop.get("SMTPHost"),prop.get("EmailAccount"),prop.get("EmailPassword"));
+                                mailKit.sendEmail(prop.get("ToEmail"), "redeem tip", "redeem bond name-" + bond_nm);
                                 writeBondList("./send.txt", String.format("%s,%s", bond_id, bond_nm));
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -75,7 +82,9 @@ public class App
             }
         });
     }
-    public static boolean containBond(List<String> bondList,String bond)
+
+
+    public  boolean containBond(List<String> bondList,String bond)
     {
         for (String item : bondList) {
             if (item.contains(bond)) {
@@ -86,7 +95,7 @@ public class App
     }
 
 
-    public static String GetRedeem()
+    public  String GetRedeem()
     {
         String url="https://www.jisilu.cn/data/cbnew/redeem_list/?___jsl=LST___t=1636805518474";
         String res = HttpKit.post(url,"");
@@ -95,7 +104,7 @@ public class App
 
 
 
-    public static List<String> readBondList(String fileName) {
+    public  List<String> readBondList(String fileName) {
         File file = new File(fileName);
         BufferedReader reader = null;
         List<String> bondList=new ArrayList<String>();
@@ -119,13 +128,13 @@ public class App
         }
     }
 
-    public static void writeBondList(String fileName,String bondInfo) {
+    public  void writeBondList(String fileName,String bondInfo) {
         try {
             FileWriter fw = new FileWriter(fileName, true);
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(bondInfo);
             bw.newLine();
-            bw.flush(); //将数据更新至文件   bw.close();   fw.close();
+            bw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
